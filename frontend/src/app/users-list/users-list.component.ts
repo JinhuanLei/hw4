@@ -21,8 +21,18 @@ export class UsersListComponent implements OnInit {
    this.suser=JSON.parse(sessionStorage.getItem('user'));
     this.email= this.suser.email;
     console.log(this.email);
+    this.validateUser();
   }
-
+  validateUser(){
+    this.http.get( "/wordgame/api/uid/v3").subscribe(
+      data => {
+        console.log(data)
+      },
+      error=>{
+        console.log(error)
+      }
+    )
+  }
   retrieveUsers(){
     this.filter='';
     this.http.get("/wordgame/api/admins/v3/users").subscribe(

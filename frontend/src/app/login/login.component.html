@@ -10,9 +10,9 @@
 
       <br>
       <button class="btn btn-lg btn-primary btn-block" type="submit" (click)="login($event)">Login</button>
-      <label style="color: #873920;display: none" id="invalid1" >Invalid username/password!</label>
-      <label style="color: #873920; display: none" id="invalid2">Invalid format of email!</label>
-      <label style="color: #873920; display: none" id="invalid5">Disabled account!</label>
+      <label *ngIf="invalid1===1" style="color: #873920;" id="invalid1" >Invalid username/password!</label>
+      <label *ngIf="invalid2===1" style="color: #873920; " id="invalid2">Invalid format of email!</label>
+      <label *ngIf="invalid5===1" style="color: #873920; " id="invalid5">Disabled account!</label>
     </form>
 
     <iframe id="id_iframe1" name="nm_iframe1" style="display:none;"></iframe>

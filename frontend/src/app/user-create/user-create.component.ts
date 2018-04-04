@@ -17,7 +17,7 @@ export class UserCreateComponent implements OnInit {
   newUser : any = { first : '', last : '' , email : '',role:'',enabled:'',password:''};
   invalid3 : any=0;
   invalid4 : any=0;
-
+  invalidPassword:any=0;
   ngOnInit() {
     this.suser=JSON.parse(sessionStorage.getItem('user'));
     this.adminemail= this.suser.email;
@@ -37,6 +37,11 @@ export class UserCreateComponent implements OnInit {
 
     if(!this.newUser.email||!this.newUser.first||!this.newUser.last||!this.newUser.password||!this.newUser.role){
       this.invalid3=1;
+      return;
+    }
+
+    if(this.newUser.password.length<8||!(this.newUser.password.match("\d"))){
+      this.invalidPassword=1;
       return;
     }
 if(!this.validateEmail(this.newUser.email)){

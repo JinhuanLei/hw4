@@ -26,6 +26,7 @@ guesscolor:any;
   ngOnInit() {
     this.loadFont();
     this.initialDefaults();
+    this.validateUser();
     this.suser = JSON.parse(sessionStorage.getItem('user'));
     this.email = this.suser.email;
     // this.levelslist=this.meta.levels;
@@ -50,6 +51,17 @@ this.strArr=[];
   onFontChange(value: any){
     this.selectedFont=value;
     console.log(this.selectedFont);
+  }
+
+  validateUser(){
+    this.http.get( "/wordgame/api/uid/v3").subscribe(
+      data => {
+        console.log(data)
+      },
+      error=>{
+        this.router.navigate(['login']);
+      }
+    )
   }
 
   loadFont(){

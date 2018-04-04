@@ -16,12 +16,14 @@ export class LoginComponent implements OnInit {
   @Input() password : string;
   //LOGIN_URL : string ="http://localhost:3000/wordgame/api/login/v3"
   LOGIN_URL : string ="/wordgame/api/login/v3"
-
+invalid1:any=0;
+  invalid2:any=0;
+  invalid5:any=0;
   constructor(private http : HttpClient, private router : Router, private userService : UserServiceService ) { }
 
 
   ngOnInit() {
-    this.email = "12691613@qq.com";
+    this.email = "samwise@mordor.org";
     this.password = "123";
 
 
@@ -45,9 +47,15 @@ export class LoginComponent implements OnInit {
           }else{
             this.router.navigateByUrl( 'gamelist');
           }
-
-
-
+        },
+        error=>{
+         if(error.statusText=="Forbidden"){
+           this.invalid1=1;
+         }else if(error.statusText=="Disabled"){
+           this.invalid5=1;
+         }else{
+           this.invalid2=1;
+         }
         }
       );
   }
