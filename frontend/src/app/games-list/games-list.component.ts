@@ -24,13 +24,8 @@ guesscolor:any;
   forecolor:any;
   wordview:any;
   ngOnInit() {
-    this.loadFont();
-    this.initialDefaults();
     this.validateUser();
-    this.suser = JSON.parse(sessionStorage.getItem('user'));
-    this.email = this.suser.email;
-    // this.levelslist=this.meta.levels;
-this.loadGameList();
+
   }
   strArr : number[ ] = [ ];
 
@@ -54,9 +49,15 @@ this.strArr=[];
   }
 
   validateUser(){
-    this.http.get( "/wordgame/api/uid/v3").subscribe(
+    this.http.get( "/wordgame/api/uid/v4").subscribe(
       data => {
-        console.log(data)
+        console.log(data);
+        this.loadFont();
+        this.initialDefaults();
+        this.suser = JSON.parse(sessionStorage.getItem('user'));
+        this.email = this.suser.email;
+        // this.levelslist=this.meta.levels;
+        this.loadGameList();
       },
       error=>{
         this.router.navigate(['login']);

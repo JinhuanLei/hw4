@@ -23,8 +23,8 @@ invalid1:any=0;
 
 
   ngOnInit() {
-    this.email = "samwise@mordor.org";
-    this.password = "123";
+    // this.email = "samwise@mordor.org";
+    // this.password = "123";
 this.validateUser();
 
   }
@@ -73,7 +73,7 @@ this.validateUser();
          }else if(error.error=="Disabled"){
            this.invalid5=1;
          }else{
-           this.invalid2=1;
+           this.invalid1=1;
          }
         }
       );

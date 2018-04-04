@@ -31,7 +31,7 @@ gameurl:any="";
   }
 
 validateUser(){
-  this.http.get( "/wordgame/api/uid/v3").subscribe(
+  this.http.get( "/wordgame/api/uid/v4").subscribe(
     data => {
       console.log(data)
     },
