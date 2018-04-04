@@ -1,26 +1,26 @@
 <div id="page2">
-  <div class="col-md-10 col-md-offset-1 well well-sm" id="gamepage">
+  <div class="col-md-10 col-md-offset-1 well well-sm" id="gamepage" [ngStyle]="{backgroundImage:'url(' + gameurl + ')'}">
     <!--<div class="modal-header">-->
-    <div>
-      <button type="submit" class="btn btn-danger" style="float:right" onclick="closeGame()"><span aria-hidden="true" >&times;</span></button>
-      <form class="form-inline" target="nm_iframe" id="guessform">
+    <div >
+      <button type="submit" class="btn btn-danger" style="float:right" (click)="closeGame()"><span aria-hidden="true" >&times;</span></button>
+      <form class="form-inline" target="nm_iframe" id="guessform" *ngIf="game.status=='unfinished'">
         <div class="form-group">
           <label id="remaining"></label>
-          <label>guesses remaining.</label>&nbsp;&nbsp;&nbsp;
-          <input type="text" class="form-control" style="width: 50px" id="letter" autofocus="" >
+          <label>guesses remaining : {{game.remaining}}</label>&nbsp;&nbsp;&nbsp;
+          <input type="text" class="form-control" style="width: 50px" id="letter" autofocus="" name="guess" [(ngModel)]="guess" >
           <button type="submit" (click)="makeGuess()" class="btn btn-primary">Guess</button>
         </div>
       </form>
       <iframe id="id_iframe" name="nm_iframe" style="display:none;"></iframe>
-
-
     </div>
     <br> <br>
     <div class="col-md-3 col-md-offset-9" style="text-align: right" id="guesses" >
+      <label *ngFor="let a of StringToArr(game.guesses)"[ngStyle]="{width: '30px',height:'40px',textAlign:'center', background:game.colors.guessBackground, fontSize:'30px', fontFamily:game.font.rule, color:game.colors.textBackground}">{{a}}</label>
 
     </div>
     <br>
     <div class="col-md-5" id="wordview" >
+      <label *ngFor="let a of StringToArr(game.view)"[ngStyle]="{width: '30px',height:'40px',textAlign:'center', background:game.colors.wordBackground, fontSize:'30px', fontFamily:game.font.rule, color:game.colors.textBackground}">{{a}}</label>
 
     </div>
 

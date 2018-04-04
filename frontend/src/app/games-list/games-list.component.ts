@@ -32,6 +32,7 @@ guesscolor:any;
 this.loadGameList();
   }
   strArr : number[ ] = [ ];
+
   StringToArr(str){
 this.strArr=[];
 
@@ -66,6 +67,7 @@ this.strArr=[];
     this.http.put( "/wordgame/api/v3/"+this.suser._id+"/defaults", defaults ).subscribe(
       data => {
         console.log(data);
+        sessionStorage.setItem("key", JSON.stringify(data));
       }
     )
 
@@ -80,7 +82,17 @@ this.strArr=[];
       }
     )
   }
+  viewGame(event){
+    var gid=event.currentTarget.id;
 
+    this.http.get( "/wordgame/api/v3/"+this.suser._id+"/"+gid).subscribe(
+      data => {
+        // console.log(data);
+        sessionStorage.setItem("game", JSON.stringify(data));
+        this.router.navigate(['gameitem']);
+      }
+    )
+  }
 
   newGame(){
     var defaults={"font":this.selectedFont,"level":this.selectedDiff,"wordcolor":this.wordcolor,"guesscolor":this.guesscolor,"forecolor":this.forecolor}
@@ -88,6 +100,8 @@ this.strArr=[];
     this.http.post( "/wordgame/api/v3/"+this.suser._id, defaults ).subscribe(
       data => {
         console.log(data);
+        sessionStorage.setItem("game", JSON.stringify(data));
+        this.router.navigate(['gameitem']);
       }
     )
   }
