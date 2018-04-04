@@ -25,11 +25,29 @@ invalid1:any=0;
   ngOnInit() {
     this.email = "samwise@mordor.org";
     this.password = "123";
-
+this.validateUser();
 
   }
+  validateUser(){
+    this.http.get<UserResponse>( "/wordgame/api/uid/v4").subscribe(
+      data => {
+        console.log(data);
+        if(data.role=="ADMIN"){
+          this.router.navigateByUrl( 'adminpage');
+        }else{
+          this.router.navigateByUrl( 'gamelist');
+        }
+      },
+      error=>{
 
+      }
+    )
+  }
   login() {
+    this.invalid1=0;
+    this.invalid2=0;
+    this.invalid5=0;
+
     var credentials = { email : this.email, password : this.password };
     this.http.post<UserResponse>( this.LOGIN_URL, credentials, { observe : 'response'} )
       .map( res => {
@@ -49,9 +67,10 @@ invalid1:any=0;
           }
         },
         error=>{
-         if(error.statusText=="Forbidden"){
+          console.log(error);
+         if(error.error=="Forbidden"){
            this.invalid1=1;
-         }else if(error.statusText=="Disabled"){
+         }else if(error.error=="Disabled"){
            this.invalid5=1;
          }else{
            this.invalid2=1;

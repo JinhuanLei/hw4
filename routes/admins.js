@@ -36,15 +36,27 @@ password=encryptPsw(password);
    var name={};
    name.first=first;
    name.last=last;
+
 var userObj=userModel.createUserObj(email,password,"",role,enabled,name);
-    db.collection("User").insertOne(userObj,function (err) {
-        if(err){
-            res.send(err);
+
+    db.collection("User").findOne({email: email}, function (err, user) {
+        if(user){
+            res.status(403).send('Repeat');
+            return;
         }else{
-            delete userObj.password;
-            res.send(userObj);
+            db.collection("User").insertOne(userObj,function (err) {
+                if(err){
+                    res.send(err);
+                }else{
+                    delete userObj.password;
+                    res.send(userObj);
+                }
+            })
+
         }
-    })
+    });
+
+
 })
 
 router.put('/wordgame/api/admins/v3/users', function(req, res, next) {

@@ -23,7 +23,7 @@ function save(){
     //     }
     // })
 var result={};
-result.email="bilbo@mordor.org";
+result.email="bibol@mordor.org";
 result.password="123123123";
 result.defaults=metadata.getMetadataobj().defaults;
     db.collection('User').insertOne(result,function(err, updated ) {

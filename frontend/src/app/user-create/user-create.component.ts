@@ -18,6 +18,7 @@ export class UserCreateComponent implements OnInit {
   invalid3 : any=0;
   invalid4 : any=0;
   invalidPassword:any=0;
+  invalidRepeat:any=0;
   ngOnInit() {
     this.suser=JSON.parse(sessionStorage.getItem('user'));
     this.adminemail= this.suser.email;
@@ -34,13 +35,19 @@ export class UserCreateComponent implements OnInit {
 
   createUser() {
     // let URL = 'http://localhost:3000/wordgame/api/admins/v3/users';
+this.invalidPassword=0;
+this.invalid3=0;
+    this.invalid4=0;
+    this.invalidRepeat=0;
 
     if(!this.newUser.email||!this.newUser.first||!this.newUser.last||!this.newUser.password||!this.newUser.role){
       this.invalid3=1;
       return;
     }
-
-    if(this.newUser.password.length<8||!(this.newUser.password.match("\d"))){
+var re=/\d/;
+    if(this.newUser.password.length<8||!(re.test(this.newUser.password))){
+      console.log(this.newUser.password.length);
+      console.log(re.test(this.newUser.password));
       this.invalidPassword=1;
       return;
     }
@@ -65,6 +72,12 @@ if(!this.validateEmail(this.newUser.email)){
           // this.newThing.name = '';
           // this.newThing.value = '';
           this.router.navigateByUrl( 'adminpage');
+        },
+        error=>{
+          console.log(error);
+          if(error.error=="Repeat"){
+            this.invalidRepeat=1;
+          }
         }
       );
   }

@@ -4,7 +4,7 @@ var bcrypt = require('bcrypt');
 var db=require("./db")
 var uuid = require('uuid');
 
-router.get('/wordgame/api/uid/v3', function(req, res, next) {
+router.get('/wordgame/api/uid/v4', function(req, res, next) {
 
     var user = req.session.user;
     console.log(req);

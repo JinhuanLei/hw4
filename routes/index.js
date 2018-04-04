@@ -45,6 +45,15 @@ function createWordDb() {
     index++;
 });
 
+    // db.collection("Word").insertOne(wordDb,function (err) {
+    //     if(err){
+    //         res.send(err);
+    //     }else{
+    //         delete userObj.password;
+    //         res.send(userObj);
+    //     }
+    // })
+
     objReadline.on('close', ()=>{
         //console.log('readline close...');
     });

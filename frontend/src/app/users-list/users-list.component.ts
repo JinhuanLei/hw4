@@ -17,19 +17,21 @@ export class UsersListComponent implements OnInit {
    email: any;
    suser:any
   ngOnInit() {
-   this.retrieveUsers();
-   this.suser=JSON.parse(sessionStorage.getItem('user'));
-    this.email= this.suser.email;
-    console.log(this.email);
     this.validateUser();
+
+
   }
   validateUser(){
-    this.http.get( "/wordgame/api/uid/v3").subscribe(
+    this.http.get( "/wordgame/api/uid/v4").subscribe(
       data => {
-        console.log(data)
+        console.log(data);
+        this.retrieveUsers();
+        this.suser=JSON.parse(sessionStorage.getItem('user'));
+        this.email= this.suser.email;
+        console.log(this.email);
       },
       error=>{
-        console.log(error)
+        this.router.navigate(['login']);
       }
     )
   }
