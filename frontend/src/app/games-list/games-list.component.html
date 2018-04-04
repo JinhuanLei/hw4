@@ -73,7 +73,16 @@
         <th>Status</th>
       </tr>
       </thead>
-      <tbody id="hi"></tbody>
+      <tbody id="hi">
+
+      <tr *ngFor="let game of games" (click)="viewGame($event)" style="cursor: pointer;" id={{game._id}}>
+        <td>{{game.level.name}}</td>
+        <td><label *ngFor="let a of StringToArr(game.view)"[ngStyle]="{width: '30px',height:'40px',textAlign:'center', background:game.colors.wordBackground, fontSize:'30px', fontFamily:game.font.rule, color:game.colors.textBackground}">{{a}}</label></td>
+        <td>{{game.remaining}}</td>
+        <td>{{game.status!="unfinished"?game.target:""}}</td>
+        <td>{{game.status}}</td>
+      </tr>
+      </tbody>
     </table>
   </div>
 </div>

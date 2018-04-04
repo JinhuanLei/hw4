@@ -22,13 +22,24 @@ export class GamesListComponent implements OnInit {
 guesscolor:any;
   wordcolor:any;
   forecolor:any;
+  wordview:any;
   ngOnInit() {
     this.loadFont();
     this.initialDefaults();
     this.suser = JSON.parse(sessionStorage.getItem('user'));
     this.email = this.suser.email;
     // this.levelslist=this.meta.levels;
+this.loadGameList();
+  }
+  strArr : number[ ] = [ ];
+  StringToArr(str){
+this.strArr=[];
 
+    for(var t=0;t<(str).length;t++)
+    {
+      this.strArr.push(str[t]);
+    }
+    return this.strArr;
   }
 
   onDiffChange(value: any){
@@ -58,6 +69,27 @@ guesscolor:any;
       }
     )
 
+  }
+
+
+  loadGameList(){
+    this.http.get( "/wordgame/api/v3/"+this.suser._id).subscribe(
+      data => {
+        console.log(data);
+        this.games=data;
+      }
+    )
+  }
+
+
+  newGame(){
+    var defaults={"font":this.selectedFont,"level":this.selectedDiff,"wordcolor":this.wordcolor,"guesscolor":this.guesscolor,"forecolor":this.forecolor}
+
+    this.http.post( "/wordgame/api/v3/"+this.suser._id, defaults ).subscribe(
+      data => {
+        console.log(data);
+      }
+    )
   }
 
   logout() {

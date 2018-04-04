@@ -12,6 +12,7 @@ import {UserServiceService} from "./user-service.service";
 import { GamesListComponent } from './games-list/games-list.component';
 import { UserItemComponent } from './user-item/user-item.component';
 import { UserCreateComponent } from './user-create/user-create.component';
+import { GameItemComponent } from './game-item/game-item.component';
 
 
 const routes: Routes = [
@@ -20,7 +21,8 @@ const routes: Routes = [
   {path: 'adminpage', component: UsersListComponent },
   {path: 'useritem', component:  UserItemComponent },
   {path:'createuser',component:UserCreateComponent},
-  {path:'gamelist',component:GamesListComponent}
+  {path:'gamelist',component:GamesListComponent},
+  {path:'gameitem',component:GameItemComponent}
 
 ]
 @NgModule({
@@ -30,7 +32,8 @@ const routes: Routes = [
     GamesListComponent,
     UsersListComponent,
     UserItemComponent,
-    UserCreateComponent
+    UserCreateComponent,
+    GameItemComponent
   ],
   imports: [
     BrowserModule,
