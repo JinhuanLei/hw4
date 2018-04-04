@@ -1,0 +1,79 @@
+<div id="page1" >
+
+  <nav class="navbar navbar-inverse">
+    <p class="navbar-text" style="margin-left: 30px" id="userEmail">{{email}}</p>
+    <button type="button" class="btn btn-default navbar-btn navbar-right" style="margin-right: 20px" (click)="logout()">Log Out</button>
+  </nav>
+  <div class="col-md-10 col-md-offset-1 well well-sm">
+    <div >
+      <form class="form-inline" >
+        <div class="col-md-3">
+          <label>Font</label>&nbsp;
+          <select class="form-control" id="font" name="font" [(ngModel)]="selectedFont" (ngModelChange)="onFontChange($event)">
+            <option *ngFor="let font of fonts" [ngValue]="font.category">{{font.category}}</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label>Level</label> &nbsp;
+          <select class="form-control" id="diff" name="diff" [(ngModel)]="selectedDiff" (ngModelChange)="onDiffChange($event)">
+            <!--<option value={{font.category}}>{{font.category}}</option>-->
+            <!--<option value={{font.category}}>{{font.category}}</option>-->
+            <option value="easy">easy</option>
+            <option value="medium">medium</option>
+
+            <option value="hard">hard</option>
+
+            <!--<option *ngFor="let list of levelslist">{{list.name}}</option>-->
+          </select>
+        </div>
+
+        <div class="form-group col-md-4">
+          <!--<label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>-->
+          <div class="input-group">
+            <div class="input-group-addon">Word</div>
+
+            <input type="color" class="form-control"  name="wordcolor" style="width: 150%" [(ngModel)]="wordcolor" value={{wordcolor}}>
+
+          </div>
+          &nbsp; &nbsp;
+          <div class="input-group">
+            <div class="input-group-addon">Guess</div>
+
+            <input type="color" class="form-control"  name="guesscolor" style="width: 150%" value={{guesscolor}} [(ngModel)]="guesscolor">
+
+          </div> &nbsp; &nbsp;
+          <div class="input-group">
+            <div class="input-group-addon">Fore</div>
+
+            <input type="color" class="form-control"  name="forecolor" style="width: 150%" value={{forecolor}}  [(ngModel)]="forecolor">
+          </div>
+          &nbsp; &nbsp;
+
+        </div>
+      </form>
+      <div class="col-md-1">
+        <button type="submit" (click)="saveDefaults()" class="btn btn-primary">Save Defaults</button>
+      </div>
+      <div class="col-md-1 "  style="margin-left: 50px">
+        <button type="submit" (click)="newGame()" class="btn btn-primary" >New Game</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-md-10 col-md-offset-1 well well-sm" id="gametable">
+    <table style="width:100%" id="gameList" >
+      <thead>
+      <tr>
+        <th>Level</th>
+        <th>Phrase</th>
+        <th>Remaining</th>
+        <th>Answer</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody id="hi"></tbody>
+    </table>
+  </div>
+</div>
