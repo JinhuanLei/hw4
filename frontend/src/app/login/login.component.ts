@@ -43,6 +43,7 @@ this.validateUser();
       }
     )
   }
+  csrf:any;
   login() {
     this.invalid1=0;
     this.invalid2=0;
@@ -51,13 +52,17 @@ this.validateUser();
     var credentials = { email : this.email, password : this.password };
     this.http.post<UserResponse>( this.LOGIN_URL, credentials, { observe : 'response'} )
       .map( res => {
-        this.userService.setToken( res.headers.get('X-CSRF-TOKEN') );
+       this.csrf=res.headers.get('CSRF-Token') ;
+        this.userService.setToken( res.headers.get('CSRF-Token') );
+        sessionStorage.setItem("csrf", this.csrf);
+        console.log(this.csrf);
         return res.body;
 
       })
       .subscribe(
         (data) => {
           console.log(data);
+
           this.userService.setUser( data );
           sessionStorage.setItem("user", JSON.stringify(data));
           if(data.role=="ADMIN"){
@@ -83,6 +88,7 @@ this.validateUser();
 
 interface UserResponse {
   role: string;
+  headers:any;
 }
 
 

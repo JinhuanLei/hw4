@@ -23,7 +23,9 @@ guesscolor:any;
   wordcolor:any;
   forecolor:any;
   wordview:any;
+  csrf:any;
   ngOnInit() {
+    this.csrf=sessionStorage.getItem("csrf");
     this.validateUser();
 
   }
@@ -108,13 +110,19 @@ this.strArr=[];
   }
 
   newGame(){
-    var defaults={"font":this.selectedFont,"level":this.selectedDiff,"wordcolor":this.wordcolor,"guesscolor":this.guesscolor,"forecolor":this.forecolor}
+    var defaults={"font":this.selectedFont,"level":this.selectedDiff,"wordcolor":this.wordcolor,"guesscolor":this.guesscolor,"forecolor":this.forecolor,"csrf":this.csrf}
 
     this.http.post( "/wordgame/api/v3/"+this.suser._id, defaults ).subscribe(
       data => {
         console.log(data);
         sessionStorage.setItem("game", JSON.stringify(data));
         this.router.navigate(['gameitem']);
+      },
+        error=>{
+        if(error.error=="Modified CsrfToken !"){
+          alert("Modified CsrfToken !");
+          this.router.navigateByUrl( 'login');
+        }
       }
     )
   }

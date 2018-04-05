@@ -15,12 +15,14 @@ export class UserItemComponent implements OnInit {
   email: any;
   suser:any
   user : any;
-  newUser : any = { uid:'',first : '', last : '' , email : '',role:'',enabled:'',password:''};
+  newUser : any = { uid:'',first : '', last : '' , email : '',role:'',enabled:'',password:'',csrf:""};
   invalid3 : any=0;
   invalid4 : any=0;
   disableRadio:any=false;
   disableCheck:any=false;
+  csrf:any;
   ngOnInit() {
+    this.csrf=sessionStorage.getItem("csrf");
     this.suser=JSON.parse(sessionStorage.getItem('user'));   //login User
     this.email= this.suser.email;
     if(sessionStorage.getItem("check")){
@@ -86,12 +88,19 @@ export class UserItemComponent implements OnInit {
     this.newUser.email=this.user.email;
     this.newUser.role=this.user.role;
     this.newUser.enabled=this.user.enabled;
+    this.newUser.csrf=this.csrf;
     var PUT_URL="/wordgame/api/admins/v3/users";
     console.log("newUser")
     console.log(this.newUser)
     this.http.put( PUT_URL,this.newUser,{responseType: "text"}).subscribe(
       data => {
         this.router.navigateByUrl( 'adminpage');
+      },
+      error=>{
+        if(error.error=="Modified CsrfToken !"){
+          alert("Modified CsrfToken !");
+          this.router.navigateByUrl( 'login');
+        }
       }
     )
   }

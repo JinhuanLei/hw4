@@ -16,8 +16,10 @@ guess:any;
 game:any;
 user:any;
 gameurl:any="";
+csrf:any;
 // guesses:any;
   ngOnInit() {
+    this.csrf=sessionStorage.getItem("csrf");
     this.game=JSON.parse(sessionStorage.getItem("game"));
     //sessionStorage.removeItem("game");
     this.user=JSON.parse(sessionStorage.getItem("user"));
@@ -41,13 +43,9 @@ validateUser(){
   )
 }
   makeGuess(){
-    this.http.post( "/wordgame/api/v3/" + this.user._id+"/"+this.game._id, {"guess":this.guess,"userid":this.user._id,"gid":this.game._id} ).subscribe(
+    this.http.post( "/wordgame/api/v3/" + this.user._id+"/"+this.game._id, {"guess":this.guess,"userid":this.user._id,"gid":this.game._id,"csrf":this.csrf} ).subscribe(
       data => {
         console.log(data);
-        if(data=="repeat guess"){
-          alert("repeat guess");
-          return;
-        }
         this.game=data;
         this.guess="";
         if(this.game.status=="victory"){
@@ -55,7 +53,19 @@ validateUser(){
         }else if(this.game.status=="loss"){
           this.gameurl="http://charity.cs.uwlax.edu/views/cs402/homeworks/hw2/images/cry.gif";
         }
-      }
+      } ,
+        error=>{
+        console.log(error);
+      if(error.error=="Modified CsrfToken !"){
+        alert("Modified CsrfToken !");
+        this.router.navigateByUrl( 'login');
+      }else if(error.error=="repeat")
+
+        this.guess="";
+            alert("repeat guess");
+            console.log("repeat");
+
+    }
     )
   }
 

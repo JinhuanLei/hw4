@@ -202,6 +202,11 @@ router.post('/wordgame/api/v3/:userid', function(req, res, next) {
     var uid=req.params.userid;
     var levelObj=level.getLevelObj(req.body.level)
     var result=createGame(uid,colorObj,fontObj,levelObj);
+    var csrf=req.body.csrf;
+    if(csrf!=req.session.csrftoken){
+        res.status(403).send('Modified CsrfToken !');
+        return;
+    }
       var defaultsObj={};
       defaultsObj.font=fontObj;
       defaultsObj.colors=colorObj;
@@ -245,6 +250,11 @@ router.post('/wordgame/api/v3/:userid/:gid', function(req, res, next) {
     var guess=req.body.guess;
     var uid=req.body.userid;
     var gid=req.body.gid;
+    var csrf=req.body.csrf;
+    if(csrf!=req.session.csrftoken){
+        res.status(403).send('Modified CsrfToken !');
+        return;
+    }
     db.collection('Game').findOne({_id:gid},function (err,game) {
         if((game.guesses).indexOf(guess)==-1){
             var position = findLetter(game.target,guess);
@@ -283,7 +293,7 @@ router.post('/wordgame/api/v3/:userid/:gid', function(req, res, next) {
                 res.send(result);
             } );
     }else{
-            res.send("repeat guess");
+            res.status(403).send('repeat');
         }
     })
 

@@ -32,6 +32,11 @@ var email=req.body.email;
 var role=req.body.role;
 var enabled=req.body.enabled;
 var password=req.body.password;
+var csrf=req.body.csrf;
+if(csrf!=req.session.csrftoken){
+    res.status(403).send('Modified CsrfToken !');
+    return;
+}
 password=encryptPsw(password);
    var name={};
    name.first=first;
@@ -69,6 +74,11 @@ router.put('/wordgame/api/admins/v3/users', function(req, res, next) {
     var name={};
     name.first=first;
     name.last=last;
+    var csrf=req.body.csrf;
+    if(csrf!=req.session.csrftoken){
+        res.status(403).send('Modified CsrfToken !');
+        return;
+    }
     db.collection("User").findOne({_id:ObjectId(uid)},function (err,data) {
        var password=data.password;
         var userObj=userModel.createUserObj(email,password,"",role,enabled,name);

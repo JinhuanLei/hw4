@@ -198,6 +198,7 @@ var GameItemComponent = /** @class */ (function () {
     }
     // guesses:any;
     GameItemComponent.prototype.ngOnInit = function () {
+        this.csrf = sessionStorage.getItem("csrf");
         this.game = JSON.parse(sessionStorage.getItem("game"));
         //sessionStorage.removeItem("game");
         this.user = JSON.parse(sessionStorage.getItem("user"));
@@ -219,12 +220,8 @@ var GameItemComponent = /** @class */ (function () {
     };
     GameItemComponent.prototype.makeGuess = function () {
         var _this = this;
-        this.http.post("/wordgame/api/v3/" + this.user._id + "/" + this.game._id, { "guess": this.guess, "userid": this.user._id, "gid": this.game._id }).subscribe(function (data) {
+        this.http.post("/wordgame/api/v3/" + this.user._id + "/" + this.game._id, { "guess": this.guess, "userid": this.user._id, "gid": this.game._id, "csrf": this.csrf }).subscribe(function (data) {
             console.log(data);
-            if (data == "repeat guess") {
-                alert("repeat guess");
-                return;
-            }
             _this.game = data;
             _this.guess = "";
             if (_this.game.status == "victory") {
@@ -233,6 +230,16 @@ var GameItemComponent = /** @class */ (function () {
             else if (_this.game.status == "loss") {
                 _this.gameurl = "http://charity.cs.uwlax.edu/views/cs402/homeworks/hw2/images/cry.gif";
             }
+        }, function (error) {
+            console.log(error);
+            if (error.error == "Modified CsrfToken !") {
+                alert("Modified CsrfToken !");
+                _this.router.navigateByUrl('login');
+            }
+            else if (error.error == "repeat")
+                _this.guess = "";
+            alert("repeat guess");
+            console.log("repeat");
         });
     };
     GameItemComponent.prototype.closeGame = function () {
@@ -305,6 +312,7 @@ var GamesListComponent = /** @class */ (function () {
         this.strArr = [];
     }
     GamesListComponent.prototype.ngOnInit = function () {
+        this.csrf = sessionStorage.getItem("csrf");
         this.validateUser();
     };
     GamesListComponent.prototype.StringToArr = function (str) {
@@ -368,11 +376,16 @@ var GamesListComponent = /** @class */ (function () {
     };
     GamesListComponent.prototype.newGame = function () {
         var _this = this;
-        var defaults = { "font": this.selectedFont, "level": this.selectedDiff, "wordcolor": this.wordcolor, "guesscolor": this.guesscolor, "forecolor": this.forecolor };
+        var defaults = { "font": this.selectedFont, "level": this.selectedDiff, "wordcolor": this.wordcolor, "guesscolor": this.guesscolor, "forecolor": this.forecolor, "csrf": this.csrf };
         this.http.post("/wordgame/api/v3/" + this.suser._id, defaults).subscribe(function (data) {
             console.log(data);
             sessionStorage.setItem("game", JSON.stringify(data));
             _this.router.navigate(['gameitem']);
+        }, function (error) {
+            if (error.error == "Modified CsrfToken !") {
+                alert("Modified CsrfToken !");
+                _this.router.navigateByUrl('login');
+            }
         });
     };
     GamesListComponent.prototype.logout = function () {
@@ -495,7 +508,10 @@ var LoginComponent = /** @class */ (function () {
         var credentials = { email: this.email, password: this.password };
         this.http.post(this.LOGIN_URL, credentials, { observe: 'response' })
             .map(function (res) {
-            _this.userService.setToken(res.headers.get('X-CSRF-TOKEN'));
+            _this.csrf = res.headers.get('CSRF-Token');
+            _this.userService.setToken(res.headers.get('CSRF-Token'));
+            sessionStorage.setItem("csrf", _this.csrf);
+            console.log(_this.csrf);
             return res.body;
         })
             .subscribe(function (data) {
@@ -517,7 +533,7 @@ var LoginComponent = /** @class */ (function () {
                 _this.invalid5 = 1;
             }
             else {
-                _this.invalid2 = 1;
+                _this.invalid1 = 1;
             }
         });
     };
@@ -585,7 +601,7 @@ var UserCreateComponent = /** @class */ (function () {
         this.http = http;
         this.router = router;
         this.userService = userService;
-        this.newUser = { first: '', last: '', email: '', role: '', enabled: '', password: '' };
+        this.newUser = { first: '', last: '', email: '', role: '', enabled: '', password: '', csrf: "" };
         this.invalid3 = 0;
         this.invalid4 = 0;
         this.invalidPassword = 0;
@@ -594,6 +610,8 @@ var UserCreateComponent = /** @class */ (function () {
     UserCreateComponent.prototype.ngOnInit = function () {
         this.suser = JSON.parse(sessionStorage.getItem('user'));
         this.adminemail = this.suser.email;
+        this.csrf = sessionStorage.getItem("csrf");
+        this.newUser.csrf = this.csrf;
     };
     UserCreateComponent.prototype.backToAdminPage = function () {
         this.router.navigateByUrl('adminpage');
@@ -632,7 +650,7 @@ var UserCreateComponent = /** @class */ (function () {
         }
         this.http.post("/wordgame/api/admins/v3/users", this.newUser, { observe: 'response' })
             .map(function (res) {
-            _this.userService.setToken(res.headers.get('X-CSRF-TOKEN'));
+            _this.userService.setToken(res.headers.get('CSRF-Token'));
             return res.body;
         })
             .subscribe(function (data) {
@@ -645,6 +663,10 @@ var UserCreateComponent = /** @class */ (function () {
             console.log(error);
             if (error.error == "Repeat") {
                 _this.invalidRepeat = 1;
+            }
+            else if (error.error == "Modified CsrfToken !") {
+                alert("Modified CsrfToken !");
+                _this.router.navigateByUrl('login');
             }
         });
     };
@@ -712,13 +734,14 @@ var UserItemComponent = /** @class */ (function () {
         this.http = http;
         this.router = router;
         this.userService = userService;
-        this.newUser = { uid: '', first: '', last: '', email: '', role: '', enabled: '', password: '' };
+        this.newUser = { uid: '', first: '', last: '', email: '', role: '', enabled: '', password: '', csrf: "" };
         this.invalid3 = 0;
         this.invalid4 = 0;
         this.disableRadio = false;
         this.disableCheck = false;
     }
     UserItemComponent.prototype.ngOnInit = function () {
+        this.csrf = sessionStorage.getItem("csrf");
         this.suser = JSON.parse(sessionStorage.getItem('user')); //login User
         this.email = this.suser.email;
         if (sessionStorage.getItem("check")) {
@@ -778,11 +801,17 @@ var UserItemComponent = /** @class */ (function () {
         this.newUser.email = this.user.email;
         this.newUser.role = this.user.role;
         this.newUser.enabled = this.user.enabled;
+        this.newUser.csrf = this.csrf;
         var PUT_URL = "/wordgame/api/admins/v3/users";
         console.log("newUser");
         console.log(this.newUser);
         this.http.put(PUT_URL, this.newUser, { responseType: "text" }).subscribe(function (data) {
             _this.router.navigateByUrl('adminpage');
+        }, function (error) {
+            if (error.error == "Modified CsrfToken !") {
+                alert("Modified CsrfToken !");
+                _this.router.navigateByUrl('login');
+            }
         });
     };
     UserItemComponent.prototype.backToAdminPage = function () {

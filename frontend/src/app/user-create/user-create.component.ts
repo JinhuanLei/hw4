@@ -14,14 +14,17 @@ export class UserCreateComponent implements OnInit {
   constructor(private http : HttpClient, private router : Router, private userService : UserServiceService ) { }
   suser:any
   adminemail: any;
-  newUser : any = { first : '', last : '' , email : '',role:'',enabled:'',password:''};
+  newUser : any = { first : '', last : '' , email : '',role:'',enabled:'',password:'',csrf:""};
   invalid3 : any=0;
   invalid4 : any=0;
   invalidPassword:any=0;
   invalidRepeat:any=0;
+  csrf:any;
   ngOnInit() {
     this.suser=JSON.parse(sessionStorage.getItem('user'));
     this.adminemail= this.suser.email;
+    this.csrf=sessionStorage.getItem("csrf");
+    this.newUser.csrf=this.csrf;
   }
 
   backToAdminPage(){
@@ -62,7 +65,7 @@ if(!this.validateEmail(this.newUser.email)){
     }
     this.http.post( "/wordgame/api/admins/v3/users", this.newUser, { observe : 'response'} )
       .map( res => {
-        this.userService.setToken( res.headers.get('X-CSRF-TOKEN') );
+        this.userService.setToken( res.headers.get('CSRF-Token') );
         return res.body;
       })
       .subscribe(
@@ -77,6 +80,9 @@ if(!this.validateEmail(this.newUser.email)){
           console.log(error);
           if(error.error=="Repeat"){
             this.invalidRepeat=1;
+          }else if(error.error=="Modified CsrfToken !"){
+            alert("Modified CsrfToken !");
+            this.router.navigateByUrl( 'login');
           }
         }
       );
